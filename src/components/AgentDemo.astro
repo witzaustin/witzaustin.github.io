@@ -1,0 +1,360 @@
+---
+// An illustrative, made-up walkthrough of the catalog audit agent fixing one
+// listing field. Placed in a project write-up with <!-- agent-demo -->.
+// Without JavaScript (or with reduced motion) it shows the finished state.
+---
+
+<figure class="agent-demo" aria-label="Illustration: an AI agent checks a made-up catalog listing against its manufacturer source and fixes one wrong field">
+  <div class="ad-head">
+    <span class="ad-kicker">Agent run</span>
+    <span class="ad-note">Illustrative · made-up product</span>
+    <button class="ad-replay" type="button">Replay</button>
+  </div>
+
+  <div class="ad-body">
+    <div class="ad-record">
+      <div class="ad-kicker">Catalog listing</div>
+      <div class="ad-title">Lancets, box of 100</div>
+      <dl class="ad-fields">
+        <div class="ad-field is-match" data-field="count">
+          <dt>Count</dt>
+          <dd><span class="ad-value">100</span></dd>
+          <span class="ad-status">Match</span>
+        </div>
+        <div class="ad-field is-match" data-field="sterile">
+          <dt>Sterile</dt>
+          <dd><span class="ad-value">Yes</span></dd>
+          <span class="ad-status">Match</span>
+        </div>
+        <div class="ad-field is-updated" data-field="gauge">
+          <dt>Gauge</dt>
+          <dd><span class="ad-value ad-old">28G</span><span class="ad-new">30G</span></dd>
+          <span class="ad-status">Updated</span>
+        </div>
+      </dl>
+    </div>
+
+    <ol class="ad-log">
+      <li class="is-on"><span class="ad-num">01</span><span>Read the listing and its current field values.</span></li>
+      <li class="is-on"><span class="ad-num">02</span><span>Found the manufacturer's published spec sheet for this product.</span></li>
+      <li class="is-on"><span class="ad-num">03</span><span>Count and sterile status match the source.</span></li>
+      <li class="is-on is-flag"><span class="ad-num">04</span><span>Gauge doesn't match: catalog says 28G, source says 30G. Flag created with a link to the source.</span></li>
+      <li class="is-on"><span class="ad-num">05</span><span>A reviewer checked the source and approved the fix.</span></li>
+      <li class="is-on is-done"><span class="ad-num">06</span><span>Catalog updated: gauge 28G → 30G.</span></li>
+    </ol>
+  </div>
+</figure>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('.agent-demo').forEach((demo) => {
+    const lines = [...demo.querySelectorAll<HTMLElement>('.ad-log li')];
+    const field = (name: string) => demo.querySelector<HTMLElement>(`[data-field="${name}"]`)!;
+    const fields = ['count', 'sterile', 'gauge'].map(field);
+    const replay = demo.querySelector<HTMLButtonElement>('.ad-replay')!;
+    let timers: number[] = [];
+
+    const setStatus = (el: HTMLElement, state: string, label: string) => {
+      el.classList.remove('is-checking', 'is-match', 'is-flagged', 'is-updated');
+      if (state) el.classList.add(state);
+      el.querySelector('.ad-status')!.textContent = label;
+    };
+    const line = (i: number) => lines[i].classList.add('is-on');
+
+    const reset = () => {
+      timers.forEach(clearTimeout);
+      timers = [];
+      lines.forEach((li) => li.classList.remove('is-on'));
+      fields.forEach((el) => setStatus(el, '', ''));
+      demo.querySelector('.ad-record')!.classList.remove('is-scanning');
+    };
+
+    // Each step: [delay in ms from start, action]
+    const steps: [number, () => void][] = [
+      [300, () => { line(0); demo.querySelector('.ad-record')!.classList.add('is-scanning'); }],
+      [1300, () => line(1)],
+      [2200, () => setStatus(fields[0], 'is-checking', 'Checking')],
+      [2700, () => { setStatus(fields[0], 'is-match', 'Match'); setStatus(fields[1], 'is-checking', 'Checking'); }],
+      [3200, () => { setStatus(fields[1], 'is-match', 'Match'); line(2); setStatus(fields[2], 'is-checking', 'Checking'); }],
+      [4000, () => { setStatus(fields[2], 'is-flagged', 'Mismatch'); line(3); }],
+      [5400, () => { line(4); setStatus(fields[2], 'is-flagged', 'Approved'); }],
+      [6300, () => {
+        setStatus(fields[2], 'is-updated', 'Updated');
+        line(5);
+        demo.querySelector('.ad-record')!.classList.remove('is-scanning');
+      }],
+    ];
+
+    const play = () => {
+      reset();
+      timers = steps.map(([delay, action]) => window.setTimeout(action, delay));
+    };
+
+    if (reduce) {
+      replay.hidden = true;
+      return;
+    }
+
+    reset();
+    replay.addEventListener('click', play);
+
+    // Start the first time the demo is mostly on screen.
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        observer.disconnect();
+        play();
+      }
+    }, { threshold: 0.5 });
+    observer.observe(demo);
+  });
+</script>
+
+<style>
+  .agent-demo {
+    max-width: 880px;
+    margin: 40px 0 48px;
+    border: 1px solid var(--line-strong);
+    background: color-mix(in srgb, var(--bg) 60%, var(--surface));
+  }
+
+  .ad-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .ad-kicker,
+  .ad-note,
+  .ad-replay,
+  .ad-status,
+  .ad-num,
+  .ad-fields dt {
+    font-family: var(--sans);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .ad-head .ad-kicker {
+    color: var(--text);
+  }
+
+  .ad-note {
+    color: var(--muted);
+  }
+
+  .ad-replay {
+    margin-left: auto;
+    padding: 6px 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .ad-replay:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .ad-body {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+  }
+
+  .ad-record {
+    position: relative;
+    padding: 24px 20px 28px;
+    border-right: 1px solid var(--line);
+    overflow: hidden;
+  }
+
+  /* A soft band that sweeps down the listing while the agent reads it */
+  .ad-record::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -40%;
+    height: 40%;
+    background: linear-gradient(to bottom, transparent, var(--wash-1), transparent);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .ad-record.is-scanning::after {
+    animation: ad-scan 2.4s ease-in-out infinite;
+  }
+
+  @keyframes ad-scan {
+    0% { top: -40%; opacity: 0; }
+    20% { opacity: 0.7; }
+    80% { opacity: 0.7; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  .ad-record .ad-kicker {
+    color: var(--muted);
+  }
+
+  .ad-title {
+    margin: 8px 0 20px;
+    font-family: var(--serif);
+    font-size: 1.75rem;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+
+  .ad-fields {
+    margin: 0;
+  }
+
+  .ad-field {
+    position: relative;
+    display: grid;
+    grid-template-columns: 70px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 10px;
+    margin: 0 -10px;
+    border-top: 1px solid var(--line);
+    transition: background-color 0.4s ease;
+  }
+
+  .ad-fields dt {
+    color: var(--muted);
+  }
+
+  .ad-fields dd {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--text);
+  }
+
+  .ad-value {
+    transition: color 0.4s ease;
+  }
+
+  .ad-new {
+    display: inline-block;
+    margin-left: 10px;
+    color: var(--text);
+    font-weight: 600;
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .ad-status {
+    min-width: 72px;
+    text-align: right;
+    color: var(--muted);
+    transition: color 0.3s ease;
+  }
+
+  .ad-field.is-checking {
+    background: color-mix(in srgb, var(--wash-2) 45%, transparent);
+  }
+
+  .ad-field.is-match .ad-status {
+    color: var(--ok);
+  }
+
+  .ad-field.is-flagged {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+  }
+
+  .ad-field.is-flagged .ad-value,
+  .ad-field.is-flagged .ad-status {
+    color: var(--accent);
+  }
+
+  .ad-field.is-updated .ad-old {
+    color: var(--muted);
+    text-decoration: line-through;
+  }
+
+  .ad-field.is-updated .ad-new {
+    opacity: 1;
+    transform: none;
+  }
+
+  .ad-field.is-updated .ad-status {
+    color: var(--ok);
+  }
+
+  .ad-log {
+    list-style: none;
+    margin: 0;
+    padding: 20px 20px 24px;
+  }
+
+  .ad-log li {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 8px;
+    margin: 0;
+    padding: 9px 0;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--body);
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .ad-log li.is-on {
+    opacity: 1;
+    transform: none;
+  }
+
+  .ad-num {
+    padding-top: 2px;
+    color: var(--muted);
+  }
+
+  .ad-log li.is-flag {
+    color: var(--accent);
+  }
+
+  .ad-log li.is-done {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  @media (max-width: 720px) {
+    .ad-body {
+      grid-template-columns: 1fr;
+    }
+
+    .ad-record {
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .ad-head {
+      flex-wrap: wrap;
+      gap: 6px 14px;
+      padding: 12px 16px;
+    }
+
+    .ad-record,
+    .ad-log {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ad-record.is-scanning::after {
+      animation: none;
+    }
+  }
+</style>

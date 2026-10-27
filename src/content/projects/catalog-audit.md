@@ -24,7 +24,7 @@ The most important design choice was that **every flag cites the source it used*
 
 ## How it works
 
-1. **Define the standard.** I wrote out what "accurate" means for a listing: which fields have to match the manufacturer, what counts as a searchability problem, and what to ignore. [TODO: list the main fields it checks, e.g. specs, sizes, counts, descriptions, search terms]
+1. **Define the standard.** I wrote out what "accurate" means for a listing: which fields have to match the manufacturer, what counts as a searchability problem, and what to ignore.
 2. **Structure the inputs.** A lot of the work was organizing product information so the model could find and reason over it reliably. When the output was weak, the fix was usually in how the information was structured, not in the prompt.
 3. **Compare and flag.** The skill checks each listing and produces a row for every issue it finds: the field, our current value, the source value, a link to the source, and the type of problem.
 4. **Review and fix.** A person reviews the flags, confirms the real errors, and corrects them in the catalog. Nothing changes in the catalog without review.
@@ -36,6 +36,8 @@ The most important design choice was that **every flag cites the source it used*
 | Lancets, box of 100 | Gauge | 28G | 30G | Spec mismatch |
 | Lancets, box of 100 | Description | "Lancet" | "Safety lancet, single use" | Missing search terms |
 
+<!-- agent-demo -->
+
 ## Result
 
 - Audited **20,000 SKUs** against manufacturer sources.
@@ -46,6 +48,6 @@ The most important design choice was that **every flag cites the source it used*
 
 - **Reviewable beats clever.** Citing the source on every flag made the output something people trusted and could act on quickly.
 - **Most fixes were in the inputs.** When the skill got something wrong, the cause was usually how the product information was organized.
-- [TODO: one specific thing the skill got wrong early on and how you fixed it. This is the most convincing paragraph you can add.]
+- **The first version was too strict.** It treated any value that wasn't typed out exactly the same as the manufacturer's as an error, so a listing that said the same thing in a slightly different format got flagged. I loosened the standard so the skill checks whether our value means the same thing as the source, not whether it's written character for character the same.
 
 *All examples on this page are illustrative. No real catalog data is shown.*

@@ -41,6 +41,8 @@ imageAlt: Diagram of the audit flow        # describe the image for screen reade
 
 **Adding a project.** Copy an existing project file in `src/content/projects/`, rename it (the file name becomes the URL, e.g. `my-project.md` → `/projects/my-project`), and edit it. It shows up in the cards and the previous/next links on its own.
 
+**Agent illustration.** The animated agent walkthrough (made-up product) appears wherever `<!-- agent-demo -->` sits in a project file. It's on the catalog audit page now. Move or delete that line to move or remove it. The demo itself lives in `src/components/AgentDemo.astro`.
+
 **Adding an image.** Put the file in `public/images/projects/` and add `image:` and `imageAlt:` to the project's frontmatter, as above. To put an image in the middle of a write-up instead, use Markdown: `![What the image shows](/images/projects/file.png)`. Use made-up data only. No real Parachute data, supplier names, or internal screenshots.
 
 **Updating the resume.** Replace `public/Austin_Witz_Resume.pdf` with a file of the same name.
@@ -51,7 +53,7 @@ imageAlt: Diagram of the audit flow        # describe the image for screen reade
 npm run todos
 ```
 
-They show on the live site too, so clear them (or cut the sentence) before you share the link. Project pages without an image also show a dashed image placeholder box, but only in local preview.
+They show on the live site too, so clear them (or cut the sentence) before you share the link.
 
 ## Preview locally
 
@@ -126,7 +128,6 @@ GitHub's own guide: https://docs.github.com/en/pages/configuring-a-custom-domain
 
 Run `npm run todos` for the full list. The ones that matter most:
 
-- `catalog-audit.md`: which fields the audit checks, and **one thing it got wrong early and how you fixed it** (this is the most convincing detail you can add anywhere on the site)
 - `attribute-data-health.md`: what it's built with, what "out of order" means, who uses it, any result
 - `prescription-quantity.md`: a one-sentence plain-language example of how the calculator works
 - `ai.md`: the "Where I don't trust it" section, in your own words
