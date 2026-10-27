@@ -436,6 +436,60 @@ mark.todo {
   grid-column: 2;
 }
 
+/* ---- Scroll effects (added by the script in Base.astro, off for reduced motion) ---- */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Home intro bullets: hidden at load, then slide in one by one on the first
+   scroll. "motion" and "scrolled" are set on <html> by Base.astro. */
+html.motion .home .prose > ul:not(hr ~ *) > li {
+  opacity: 0;
+  transform: translateX(-12px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+html.motion.scrolled .home .prose > ul:not(hr ~ *) > li {
+  opacity: 1;
+  transform: none;
+}
+
+html.motion .home .prose > ul:not(hr ~ *) > li:nth-child(2) {
+  transition-delay: 0.12s;
+}
+
+html.motion .home .prose > ul:not(hr ~ *) > li:nth-child(3) {
+  transition-delay: 0.24s;
+}
+
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  z-index: 10;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 @media (max-width: 520px) {
   body {
     font-size: 1.0625rem;
