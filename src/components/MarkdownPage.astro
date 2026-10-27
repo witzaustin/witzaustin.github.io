@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ProjectCards from './ProjectCards.astro';
+import ResumePanel from './ResumePanel.astro';
 import { getPage } from '../lib/content';
 
 interface Props {
@@ -10,12 +11,20 @@ interface Props {
 
 const { id, bodyClass } = Astro.props;
 const page = await getPage(id);
+
+// Markers in a page's Markdown that are swapped for a component:
+// <!-- project-cards --> and <!-- resume-panel -->
+const blocks = { 'project-cards': ProjectCards, 'resume-panel': ResumePanel };
+// Splitting with a capture group alternates: html, marker name, html, ...
+const parts = page.html.split(/<!-- (project-cards|resume-panel) -->/);
 ---
 
 <Base title={page.data.title} description={page.data.description} bodyClass={bodyClass}>
   <article class="prose">
-    <Fragment set:html={page.before} />
-    {page.hasCards && <ProjectCards />}
-    <Fragment set:html={page.after} />
+    {parts.map((part, i) => {
+      if (i % 2 === 0) return <Fragment set:html={part} />;
+      const Block = blocks[part as keyof typeof blocks];
+      return <Block />;
+    })}
   </article>
 </Base>

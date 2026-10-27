@@ -9,9 +9,10 @@ A small static site built with [Astro](https://astro.build). All the words live 
 | `src/content/index.md` | Home page |
 | `src/content/about.md` | About page |
 | `src/content/ai.md` | How I use AI at work |
+| `src/content/resume.md` | Resume page (the text shown on the site) |
 | `src/content/projects/index.md` | Projects page intro and "Smaller things I've built" |
 | `src/content/projects/*.md` | One file per project write-up |
-| `public/Austin_Witz_Resume.pdf` | The resume the site links to |
+| `public/Austin_Witz_Resume.pdf` | The PDF behind the Download PDF button on the resume page |
 | `public/images/projects/` | Images for project pages |
 | `src/styles/global.css` | Colors, fonts, spacing (colors are at the top) |
 
@@ -45,7 +46,7 @@ imageAlt: Diagram of the audit flow        # describe the image for screen reade
 
 **Adding an image.** Put the file in `public/images/projects/` and add `image:` and `imageAlt:` to the project's frontmatter, as above. To put an image in the middle of a write-up instead, use Markdown: `![What the image shows](/images/projects/file.png)`. Use made-up data only. No real Parachute data, supplier names, or internal screenshots.
 
-**Updating the resume.** Replace `public/Austin_Witz_Resume.pdf` with a file of the same name.
+**Updating the resume.** On the home page, the Resume button opens the resume in a panel right under the buttons (the nav and footer Resume links open it too). Everywhere else, Resume links open the resume page. Both show the text from `src/content/resume.md` with a Download PDF button. When your resume changes, update both: edit `resume.md`, and replace `public/Austin_Witz_Resume.pdf` with a file of the same name. The web version leaves your phone number off on purpose; the PDF still has it.
 
 **TODO notes.** Anything written as `[TODO: ...]` is highlighted in yellow on the page so it's easy to find. To list every one that's left:
 
@@ -125,8 +126,4 @@ GitHub's own guide: https://docs.github.com/en/pages/configuring-a-custom-domain
 
 ## Open TODOs
 
-Run `npm run todos` for the full list. The ones that matter most:
-
-- `ai.md`: the "Where I don't trust it" section, in your own words
-- `projects/index.md`: tools used for the briefing and Notion agent
-- `about.md`: optional "Outside of work" line
+None right now. If you add new `[TODO: ...]` notes, `npm run todos` lists them.

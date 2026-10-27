@@ -1,0 +1,20 @@
+---
+import Base from '../layouts/Base.astro';
+import { getPage } from '../lib/content';
+
+// The resume text lives in src/content/resume.md. The PDF is public/Austin_Witz_Resume.pdf.
+const page = await getPage('resume');
+---
+
+<Base title={page.data.title} description={page.data.description} bodyClass="resume">
+  <div class="resume-bar">
+    <span class="label">Resume</span>
+    <a class="resume-download" href="/Austin_Witz_Resume.pdf" download>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"></path><path d="m7 10 5 5 5-5"></path><path d="M5 20h14"></path></svg>
+      Download PDF
+    </a>
+  </div>
+  <article class="prose">
+    <Fragment set:html={page.html} />
+  </article>
+</Base>

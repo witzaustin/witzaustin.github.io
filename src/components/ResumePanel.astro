@@ -1,0 +1,74 @@
+---
+// The resume, shown in an expanding panel on the home page. Placed with
+// <!-- resume-panel --> in src/content/index.md. The text comes from
+// src/content/resume.md, the same file the /resume page uses.
+// Without JavaScript the panel stays hidden and Resume links go to /resume.
+import { getPage } from '../lib/content';
+
+const resume = await getPage('resume');
+---
+
+<section class="resume-panel" id="resume" aria-label="Resume">
+  <div class="resume-panel-inner">
+    <div class="resume-panel-body">
+      <div class="resume-bar">
+        <span class="label">Resume</span>
+        <span class="resume-actions">
+          <a class="resume-download" href="/Austin_Witz_Resume.pdf" download>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"></path><path d="m7 10 5 5 5-5"></path><path d="M5 20h14"></path></svg>
+            Download PDF
+          </a>
+          <button class="resume-close" type="button" aria-label="Close resume">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+          </button>
+        </span>
+      </div>
+      <div class="resume-doc">
+        <Fragment set:html={resume.html} />
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const panel = document.getElementById('resume');
+  if (panel) {
+    document.documentElement.classList.add('has-resume-panel');
+    const buttons = document.querySelectorAll<HTMLAnchorElement>('.prose > p > a[href="/resume"]');
+    const otherLinks = document.querySelectorAll<HTMLAnchorElement>('a[href="/resume"]:not(.prose > p > a)');
+    const smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const setOpen = (open: boolean, scroll: boolean) => {
+      panel.classList.toggle('is-open', open);
+      panel.setAttribute('aria-hidden', String(!open));
+      panel.toggleAttribute('inert', !open);
+      buttons.forEach((b) => b.setAttribute('aria-expanded', String(open)));
+      if (open && scroll) {
+        panel.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+      }
+    };
+
+    buttons.forEach((b) => {
+      b.setAttribute('aria-controls', 'resume');
+      b.addEventListener('click', (e) => {
+        e.preventDefault();
+        setOpen(!panel.classList.contains('is-open'), false);
+      });
+    });
+
+    // The nav and footer Resume links open the panel and jump to it.
+    otherLinks.forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        setOpen(true, true);
+      });
+    });
+
+    panel.querySelector('.resume-close')!.addEventListener('click', () => {
+      setOpen(false, false);
+      buttons[0]?.focus();
+    });
+
+    setOpen(location.hash === '#resume', location.hash === '#resume');
+  }
+</script>

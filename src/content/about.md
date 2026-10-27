@@ -37,6 +37,6 @@ B.S. Operations Management, minor in Management Information Systems · 2023
 
 ## Outside of work
 
-[TODO: optional, one or two lines. Some ideas you could use or cut: golf, baking sourdough and grilling, reading sci-fi.]
+When I'm not working, I'm usually playing golf, baking sourdough, watching football, or catching up on the latest movies and music releases.
 
-[Resume (PDF)](/Austin_Witz_Resume.pdf) · [LinkedIn](https://www.linkedin.com/in/austin-witz) · [Email](mailto:witzaustin@gmail.com)
+[Resume](/resume) · [LinkedIn](https://www.linkedin.com/in/austin-witz) · [Email](mailto:witzaustin@gmail.com)

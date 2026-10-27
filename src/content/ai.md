@@ -1,6 +1,6 @@
 ---
 title: How I use AI at work
-description: What I build with Claude, Gemini, and N8N, how I check the output, and where I don't trust it.
+description: What I build with Claude, Claude Code, Notion, and N8N, how I check the output, and where I don't trust it.
 ---
 
 # How I use AI at work
@@ -11,9 +11,10 @@ Now AI is a normal part of how I work. Here's what that looks like.
 
 ## What I use
 
-- **Claude** for work that needs careful reasoning over structured information, like the [catalog audit skill](/projects/catalog-audit) and the [legacy data crosswalk](/projects/attribute-crosswalk), where I split the work across subagents on Opus, Sonnet, and Haiku. I also use Claude Code. [TODO: confirm what you use Claude Code for, or cut it]
-- **Gemini** for batch work through custom Gems.
-- **N8N** for workflows that run on a schedule, like my weekly industry briefing.
+- **Claude** for work that needs careful reasoning over structured information, like the [catalog audit skill](/projects/catalog-audit) and the [legacy data crosswalk](/projects/attribute-crosswalk), where I split the work across subagents on Opus, Sonnet, and Haiku.
+- **Claude Code** for building tools, like the [attribute data health dashboard](/projects/attribute-data-health) and this website.
+- **Claude Cowork and Notion** for recurring work, like my weekly Diabetes industry briefing.
+- **N8N** for running SQL against our data on a schedule, like the checks behind the attribute data health dashboard.
 
 ## How I decide what to build
 
@@ -30,10 +31,8 @@ Building the tool is maybe half the job. The other half is knowing whether it's 
 
 ## Where I don't trust it
 
-[TODO: two or three honest lines in your own words. Some ideas, only if they're true for you:]
-- [Anything where a wrong answer reaches a patient or a payer without a person seeing it first]
-- [Cases where there's no clear source to check against]
-- [Specific kinds of mistakes you've seen the models make in your work]
+- Anything where a wrong answer could reach a patient or a payer without a person seeing it first.
+- Cases where there's no clear source to check against.
 
 ## What I've learned
 

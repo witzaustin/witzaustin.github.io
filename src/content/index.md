@@ -15,7 +15,9 @@ My work falls into three areas:
 
 I'm based in the New York area and looking for my next role in product operations, strategy & operations, or product management.
 
-[Resume (PDF)](/Austin_Witz_Resume.pdf) · [LinkedIn](https://www.linkedin.com/in/austin-witz) · [Email](mailto:witzaustin@gmail.com)
+[Resume](/resume) · [LinkedIn](https://www.linkedin.com/in/austin-witz) · [Email](mailto:witzaustin@gmail.com)
+
+<!-- resume-panel -->
 
 ---
 
