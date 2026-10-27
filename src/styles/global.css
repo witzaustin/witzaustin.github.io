@@ -422,13 +422,15 @@ main {
   border-color: var(--text);
 }
 
-.prose > p:has(> a[href='/resume']) > a[href='/resume'] {
+/* Resume is the solid button. On the home page it toggles the resume panel,
+   so there it's solid only while the panel is open (aria-expanded="true"). */
+.prose > p:has(> a[href='/resume']) > a[href='/resume']:not([aria-expanded='false']) {
   border-color: var(--text);
   background: var(--text);
   color: var(--bg);
 }
 
-.prose > p:has(> a[href='/resume']) > a[href='/resume']:hover {
+.prose > p:has(> a[href='/resume']) > a[href='/resume']:not([aria-expanded='false']):hover {
   background: var(--accent);
   border-color: var(--accent);
 }

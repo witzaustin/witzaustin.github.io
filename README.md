@@ -121,8 +121,7 @@ GitHub's own guide: https://docs.github.com/en/pages/configuring-a-custom-domain
 
 ## Decisions to confirm before publishing
 
-1. **Job titles.** The site uses your real Parachute titles (Senior Category Analyst, Category Analyst) because a public page is easy to compare against reference checks. The resume PDF linked from the site still says Product Operations Analyst. Either keep the mismatch on purpose or line them up.
-2. **Confidentiality.** Every example table uses made-up products and values. Check that you're comfortable naming Parachute and the $8M Diabetes figure publicly (both are already on your resume).
+1. **Confidentiality.** Every example table uses made-up products and values. Check that you're comfortable naming Parachute and the $8M Diabetes figure publicly (both are already on your resume).
 
 ## Open TODOs
 

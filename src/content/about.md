@@ -5,7 +5,7 @@ description: Background, how I work, and what I'm looking for next.
 
 # About
 
-I'm a Senior Category Analyst at Parachute Health, where I do product operations work for the platform's medical supply catalog. Parachute connects healthcare facilities with the suppliers who fulfill equipment and supply orders for patients. I own the Diabetes category, about $8M in platform revenue, and before that I owned Pregnancy and Maternity.
+I'm a Senior Product Operations Analyst at Parachute Health, where I work on the platform's medical supply catalog. Parachute connects healthcare facilities with the suppliers who fulfill equipment and supply orders for patients. I own the Diabetes category, about $8M in platform revenue, and before that I owned Pregnancy and Maternity.
 
 Day to day I sit between three groups. Clinical users tell me how ordering actually works for them. Product and engineering need that turned into requirements with the edge cases spelled out. Leadership needs to know what's working and what to build next. A lot of my job is translating between them, then staying with a feature after it ships to see what the rollout teaches us.
 
@@ -25,8 +25,8 @@ A role in product operations, strategy & operations, or product management where
 ## Experience
 
 **Parachute Health** · Remote
-Senior Category Analyst · April 2026 – Present
-Category Analyst · October 2024 – March 2026
+Senior Product Operations Analyst, Category · April 2026 – Present
+Product Operations Analyst, Category · October 2024 – March 2026
 
 **Global Industrial** · Port Washington, NY
 Product Operations Specialist · March 2024 – October 2024
