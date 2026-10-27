@@ -1,5 +1,6 @@
 ---
 import AgentDemo from '../../components/AgentDemo.astro';
+import DashboardDemo from '../../components/DashboardDemo.astro';
 import Base from '../../layouts/Base.astro';
 import { getProjects } from '../../lib/content';
 
@@ -12,20 +13,23 @@ export async function getStaticPaths() {
 }
 
 const { project, prev, next } = Astro.props;
-// Put <!-- agent-demo --> in a project's Markdown to show the agent illustration there.
-const DEMO_MARKER = '<!-- agent-demo -->';
+// Put <!-- agent-demo --> or <!-- dashboard-demo --> in a project's Markdown
+// to show that animated illustration at that spot.
+const demos = { 'agent-demo': AgentDemo, 'dashboard-demo': DashboardDemo };
 const html = project.rendered?.html ?? '';
-const [before, after = ''] = html.split(DEMO_MARKER);
-const hasDemo = html.includes(DEMO_MARKER);
+// Splitting with a capture group alternates: html, marker name, html, ...
+const parts = html.split(/<!-- (agent-demo|dashboard-demo) -->/);
 const { image, imageAlt } = project.data;
 ---
 
 <Base title={project.data.title} description={project.data.summary} bodyClass="project">
   <div class="progress" aria-hidden="true"></div>
   <article class="prose">
-    <Fragment set:html={before} />
-    {hasDemo && <AgentDemo />}
-    <Fragment set:html={after} />
+    {parts.map((part, i) => {
+      if (i % 2 === 0) return <Fragment set:html={part} />;
+      const Demo = demos[part as keyof typeof demos];
+      return <Demo />;
+    })}
 
     {image && (
       <figure class="project-figure">

@@ -41,7 +41,7 @@ imageAlt: Diagram of the audit flow        # describe the image for screen reade
 
 **Adding a project.** Copy an existing project file in `src/content/projects/`, rename it (the file name becomes the URL, e.g. `my-project.md` → `/projects/my-project`), and edit it. It shows up in the cards and the previous/next links on its own.
 
-**Agent illustration.** The animated agent walkthrough (made-up product) appears wherever `<!-- agent-demo -->` sits in a project file. It's on the catalog audit page now. Move or delete that line to move or remove it. The demo itself lives in `src/components/AgentDemo.astro`.
+**Animated illustrations.** Two made-up demos can be placed in any project file: `<!-- agent-demo -->` (the catalog audit agent, on the catalog audit page) and `<!-- dashboard-demo -->` (the attribute health dashboard, on its page). Move or delete the line to move or remove one. They live in `src/components/AgentDemo.astro` and `src/components/DashboardDemo.astro`.
 
 **Adding an image.** Put the file in `public/images/projects/` and add `image:` and `imageAlt:` to the project's frontmatter, as above. To put an image in the middle of a write-up instead, use Markdown: `![What the image shows](/images/projects/file.png)`. Use made-up data only. No real Parachute data, supplier names, or internal screenshots.
 
@@ -127,7 +127,6 @@ GitHub's own guide: https://docs.github.com/en/pages/configuring-a-custom-domain
 
 Run `npm run todos` for the full list. The ones that matter most:
 
-- `attribute-data-health.md`: what it's built with, what "out of order" means, who uses it, any result
 - `ai.md`: the "Where I don't trust it" section, in your own words
 - `projects/index.md`: tools used for the briefing and Notion agent
 - `about.md`: optional "Outside of work" line

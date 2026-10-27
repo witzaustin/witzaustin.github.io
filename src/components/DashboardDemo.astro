@@ -1,0 +1,502 @@
+---
+// An illustrative, made-up run of the attribute data health dashboard.
+// Placed in a project write-up with <!-- dashboard-demo -->.
+// Without JavaScript (or with reduced motion) it shows the finished state.
+
+interface Row {
+  key: string;
+  name: string;
+  rule: string;
+  current: string[];
+  fixed: string[];
+  problem: string | null;
+}
+
+const rows: Row[] = [
+  { key: 'brand', name: 'Brand', rule: 'Alphabetical', current: ['Brand C', 'Brand A', 'Brand B'], fixed: ['Brand A', 'Brand B', 'Brand C'], problem: 'Out of order' },
+  { key: 'weight', name: 'Weight', rule: 'Numeric', current: ['10 lb', '2 lb', '5 lb'], fixed: ['2 lb', '5 lb', '10 lb'], problem: 'Out of order' },
+  { key: 'size', name: 'Size', rule: 'Pre-defined', current: ['M', 'S', 'L', 'LG'], fixed: ['S', 'M', 'L'], problem: 'Order + duplicate' },
+  { key: 'length', name: 'Length', rule: 'Numeric', current: ['12 in', '24 in', '36 in'], fixed: ['12 in', '24 in', '36 in'], problem: null },
+];
+
+// Finished state: fixed order first, then any removed duplicates.
+const finalChips = (row: Row) => [
+  ...row.fixed.map((value) => ({ value, removed: false })),
+  ...row.current.filter((v) => !row.fixed.includes(v)).map((value) => ({ value, removed: true })),
+];
+const fixedCount = rows.filter((r) => r.problem).length;
+---
+
+<figure class="dash-demo" aria-label="Illustration: the attribute health dashboard checks four made-up attributes, puts out-of-order values in the right order, removes a duplicate, and builds an upload-ready file">
+  <div class="dd-head">
+    <span class="dd-kicker">Attribute health</span>
+    <span class="dd-note">Illustrative · made-up data</span>
+    <button class="dd-replay" type="button">Replay</button>
+  </div>
+
+  <div class="dd-summary">
+    <div>
+      <div class="dd-score"><span class="dd-score-num">100</span>%</div>
+      <div class="dd-kicker dd-muted">Attributes healthy</div>
+    </div>
+    <div class="dd-meter" aria-hidden="true"><span class="dd-meter-fill" style="transform: scaleX(1)"></span></div>
+    <span class="dd-phase">Signed off</span>
+  </div>
+
+  <ul class="dd-rows">
+    {rows.map((row) => (
+      <li
+        class="dd-row is-done"
+        data-key={row.key}
+        data-current={JSON.stringify(row.current)}
+        data-fixed={JSON.stringify(row.fixed)}
+        data-problem={row.problem ?? ''}
+      >
+        <div class="dd-attr">
+          <span class="dd-name">{row.name}</span>
+          <span class="dd-kicker dd-muted">{row.rule}</span>
+        </div>
+        <div class="dd-chips">
+          {finalChips(row).map((chip) => (
+            <span class={chip.removed ? 'dd-chip is-removed' : 'dd-chip'} data-value={chip.value}>{chip.value}</span>
+          ))}
+        </div>
+        <span class="dd-status">{row.problem ? 'Fixed' : 'Healthy'}</span>
+      </li>
+    ))}
+  </ul>
+
+  <div class="dd-foot">
+    <span class="dd-file is-on">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path><path d="M14 3v5h5"></path></svg>
+      corrections.csv · {fixedCount} attributes · upload-ready
+    </span>
+    <span class="dd-signoff is-on">✓ Reviewed and signed off</span>
+  </div>
+</figure>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('.dash-demo').forEach((demo) => {
+    const rows = [...demo.querySelectorAll<HTMLElement>('.dd-row')];
+    const scoreNum = demo.querySelector<HTMLElement>('.dd-score-num')!;
+    const meter = demo.querySelector<HTMLElement>('.dd-meter-fill')!;
+    const phase = demo.querySelector<HTMLElement>('.dd-phase')!;
+    const file = demo.querySelector<HTMLElement>('.dd-file')!;
+    const signoff = demo.querySelector<HTMLElement>('.dd-signoff')!;
+    const replay = demo.querySelector<HTMLButtonElement>('.dd-replay')!;
+    let timers: number[] = [];
+    let raf = 0;
+
+    const data = (row: HTMLElement) => ({
+      current: JSON.parse(row.dataset.current!) as string[],
+      fixed: JSON.parse(row.dataset.fixed!) as string[],
+      problem: row.dataset.problem!,
+    });
+    const chipsOf = (row: HTMLElement) => row.querySelector<HTMLElement>('.dd-chips')!;
+    const chip = (row: HTMLElement, value: string) =>
+      chipsOf(row).querySelector<HTMLElement>(`[data-value="${value}"]`)!;
+
+    const setRow = (row: HTMLElement, state: string, label: string) => {
+      row.classList.remove('is-checking', 'is-flagged', 'is-healthy', 'is-fixing', 'is-done');
+      if (state) row.classList.add(state);
+      row.querySelector('.dd-status')!.textContent = label;
+    };
+
+    // Moves chips into a new order, animating each from where it was (FLIP).
+    const reorder = (row: HTMLElement, order: string[], animate: boolean) => {
+      const box = chipsOf(row);
+      const chips = [...box.children] as HTMLElement[];
+      const before = new Map(chips.map((c) => [c, c.getBoundingClientRect()]));
+      const rest = chips.filter((c) => !order.includes(c.dataset.value!));
+      [...order.map((v) => chip(row, v)), ...rest].forEach((c) => box.appendChild(c));
+      if (!animate) return;
+      chips.forEach((c) => {
+        const a = before.get(c)!;
+        const b = c.getBoundingClientRect();
+        const dx = a.left - b.left;
+        const dy = a.top - b.top;
+        if (dx || dy) {
+          c.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'none' }], {
+            duration: 700,
+            easing: 'cubic-bezier(0.2, 0.7, 0.2, 1)',
+          });
+        }
+      });
+    };
+
+    const setScore = (to: number, animate: boolean) => {
+      cancelAnimationFrame(raf);
+      const from = Number(scoreNum.textContent);
+      meter.style.transform = `scaleX(${to / 100})`;
+      if (!animate) { scoreNum.textContent = String(to); return; }
+      const start = performance.now();
+      const tick = (now: number) => {
+        const t = Math.min((now - start) / 900, 1);
+        scoreNum.textContent = String(Math.round(from + (to - from) * (1 - Math.pow(1 - t, 3))));
+        if (t < 1) raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
+    };
+
+    const reset = () => {
+      timers.forEach(clearTimeout);
+      timers = [];
+      rows.forEach((row) => {
+        const { current } = data(row);
+        reorder(row, current, false);
+        chipsOf(row).querySelectorAll('.dd-chip').forEach((c) => c.classList.remove('is-removed', 'is-wrong'));
+        setRow(row, '', '');
+      });
+      demo.classList.remove('has-score');
+      setScore(0, false);
+      phase.textContent = 'Ready';
+      file.classList.remove('is-on');
+      signoff.classList.remove('is-on');
+    };
+
+    const steps: [number, () => void][] = [[300, () => { phase.textContent = 'Running check'; }]];
+
+    // Check each attribute in turn.
+    rows.forEach((row, i) => {
+      const at = 500 + i * 550;
+      steps.push([at, () => setRow(row, 'is-checking', 'Checking')]);
+      steps.push([at + 350, () => {
+        const { problem, current, fixed } = data(row);
+        if (problem) {
+          setRow(row, 'is-flagged', problem);
+          current.forEach((v, idx) => {
+            if (fixed[idx] !== v) chip(row, v).classList.add('is-wrong');
+          });
+        } else {
+          setRow(row, 'is-healthy', 'Healthy');
+        }
+      }]);
+    });
+
+    const healthyAtStart = Math.round((rows.filter((r) => !r.dataset.problem).length / rows.length) * 100);
+    steps.push([2900, () => { demo.classList.add('has-score'); setScore(healthyAtStart, true); }]);
+    steps.push([3500, () => { phase.textContent = 'Building corrections'; }]);
+
+    // Put each flagged attribute in the right order, one at a time.
+    rows.filter((r) => r.dataset.problem).forEach((row, i) => {
+      steps.push([3800 + i * 750, () => {
+        const { current, fixed } = data(row);
+        setRow(row, 'is-fixing', 'Fixed in file');
+        chipsOf(row).querySelectorAll('.dd-chip').forEach((c) => c.classList.remove('is-wrong'));
+        current.filter((v) => !fixed.includes(v)).forEach((v) => chip(row, v).classList.add('is-removed'));
+        reorder(row, fixed, true);
+      }]);
+    });
+
+    steps.push([6300, () => { file.classList.add('is-on'); phase.textContent = 'Ready for review'; }]);
+    steps.push([7600, () => {
+      signoff.classList.add('is-on');
+      phase.textContent = 'Signed off';
+      rows.filter((r) => r.dataset.problem).forEach((row) => setRow(row, 'is-done', 'Fixed'));
+      setScore(100, true);
+    }]);
+
+    const play = () => {
+      reset();
+      timers = steps.map(([delay, action]) => window.setTimeout(action, delay));
+    };
+
+    if (reduce) {
+      replay.hidden = true;
+      return;
+    }
+
+    reset();
+    replay.addEventListener('click', play);
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        observer.disconnect();
+        play();
+      }
+    }, { threshold: 0.5 });
+    observer.observe(demo);
+  });
+</script>
+
+<style>
+  .dash-demo {
+    max-width: 880px;
+    margin: 40px 0 48px;
+    border: 1px solid var(--line-strong);
+    background: color-mix(in srgb, var(--bg) 60%, var(--surface));
+  }
+
+  .dd-kicker,
+  .dd-note,
+  .dd-replay,
+  .dd-status,
+  .dd-phase,
+  .dd-foot {
+    font-family: var(--sans);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .dd-muted,
+  .dd-note {
+    color: var(--muted);
+  }
+
+  .dd-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .dd-head .dd-kicker {
+    color: var(--text);
+  }
+
+  .dd-replay {
+    margin-left: auto;
+    padding: 6px 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .dd-replay:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Score, meter, and current phase */
+  .dd-summary {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 24px;
+    padding: 24px 20px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .dd-score {
+    font-family: var(--serif);
+    font-size: 3rem;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    min-width: 3.4ch;
+    opacity: 0.25;
+    transition: opacity 0.4s ease;
+  }
+
+  .dash-demo.has-score .dd-score,
+  .dash-demo:not(:has(.dd-row:not(.is-done))) .dd-score {
+    opacity: 1;
+  }
+
+  .dd-summary .dd-kicker {
+    margin-top: 6px;
+  }
+
+  .dd-meter {
+    height: 2px;
+    background: var(--line);
+    overflow: hidden;
+  }
+
+  .dd-meter-fill {
+    display: block;
+    height: 100%;
+    background: var(--ok);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  .dd-phase {
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  /* Attribute rows */
+  .dd-rows {
+    list-style: none;
+    margin: 0;
+    padding: 0 20px;
+  }
+
+  .dd-row {
+    display: grid;
+    grid-template-columns: 150px 1fr 150px;
+    align-items: center;
+    gap: 16px;
+    margin: 0 -20px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
+    transition: background-color 0.4s ease;
+  }
+
+  .dd-attr {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .dd-name {
+    font-family: var(--serif);
+    font-size: 1.375rem;
+    line-height: 1.1;
+    color: var(--text);
+  }
+
+  .dd-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .dd-chip {
+    display: inline-flex;
+    align-items: center;
+    height: 30px;
+    padding: 0 12px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: var(--bg);
+    font-size: 0.8125rem;
+    color: var(--text);
+    transition: border-color 0.3s ease, color 0.3s ease, opacity 0.4s ease, background-color 0.3s ease;
+  }
+
+  .dd-chip.is-wrong {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .dd-chip.is-removed {
+    opacity: 0.4;
+    text-decoration: line-through;
+    border-style: dashed;
+  }
+
+  .dd-status {
+    text-align: right;
+    color: var(--muted);
+    transition: color 0.3s ease;
+  }
+
+  .dd-row.is-checking {
+    background: color-mix(in srgb, var(--wash-2) 40%, transparent);
+  }
+
+  .dd-row.is-flagged {
+    background: color-mix(in srgb, var(--accent) 9%, transparent);
+  }
+
+  .dd-row.is-flagged .dd-status {
+    color: var(--accent);
+  }
+
+  .dd-row.is-healthy .dd-status,
+  .dd-row.is-fixing .dd-status,
+  .dd-row.is-done .dd-status {
+    color: var(--ok);
+  }
+
+  /* Output file and sign-off */
+  .dd-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 20px;
+    padding: 16px 20px;
+    min-height: 62px;
+  }
+
+  .dd-file,
+  .dd-signoff {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .dd-file {
+    padding: 7px 14px;
+    border: 1px solid var(--text);
+    border-radius: 999px;
+    color: var(--text);
+  }
+
+  .dd-file svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .dd-signoff {
+    color: var(--ok);
+  }
+
+  .dd-file.is-on,
+  .dd-signoff.is-on {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (max-width: 720px) {
+    .dd-head {
+      flex-wrap: wrap;
+      gap: 6px 14px;
+      padding: 12px 16px;
+    }
+
+    .dd-summary {
+      grid-template-columns: auto 1fr;
+      gap: 16px 20px;
+      padding: 20px 16px;
+    }
+
+    .dd-meter {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+
+    .dd-phase {
+      justify-self: end;
+    }
+
+    .dd-rows {
+      padding: 0 16px;
+    }
+
+    .dd-row {
+      grid-template-columns: 1fr auto;
+      gap: 10px 12px;
+      margin: 0 -16px;
+      padding: 16px;
+    }
+
+    .dd-chips {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+
+    .dd-foot {
+      padding: 14px 16px;
+    }
+  }
+</style>
