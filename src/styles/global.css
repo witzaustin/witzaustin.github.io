@@ -302,10 +302,8 @@ main {
   font-weight: 600;
 }
 
-/* Lead paragraphs on the home page */
-.home .prose h1 + p,
-.home .prose h1 + p + p,
-.home .prose h1 + p + p + p {
+/* Lead text on the home page (everything above the first divider) */
+.home .prose > :is(p, ul):not(hr ~ *) {
   font-size: 1.1875rem;
 }
 
