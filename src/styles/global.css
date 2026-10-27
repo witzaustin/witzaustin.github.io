@@ -448,25 +448,25 @@ mark.todo {
   transform: none;
 }
 
-/* Home intro bullets: hidden at load, then slide in one by one on the first
-   scroll. "motion" and "scrolled" are set on <html> by Base.astro. */
+/* Home intro bullets: hidden at first paint, then fade in one by one right
+   after the page loads. "motion" and "intro-in" are set on <html> by Base.astro. */
 html.motion .home .prose > ul:not(hr ~ *) > li {
   opacity: 0;
   transform: translateX(-12px);
-  transition: opacity 0.45s ease, transform 0.45s ease;
+  transition: opacity 0.69s ease, transform 0.69s ease;
 }
 
-html.motion.scrolled .home .prose > ul:not(hr ~ *) > li {
+html.motion.intro-in .home .prose > ul:not(hr ~ *) > li {
   opacity: 1;
   transform: none;
 }
 
 html.motion .home .prose > ul:not(hr ~ *) > li:nth-child(2) {
-  transition-delay: 0.12s;
+  transition-delay: 0.21s;
 }
 
 html.motion .home .prose > ul:not(hr ~ *) > li:nth-child(3) {
-  transition-delay: 0.24s;
+  transition-delay: 0.41s;
 }
 
 .progress {

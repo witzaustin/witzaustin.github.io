@@ -95,21 +95,10 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
       (function () {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-        // Home intro bullets appear on the very first scroll, wheel tick, swipe,
-        // or scroll key. A timer shows them anyway for visitors who don't scroll.
-        var root = document.documentElement;
-        var showIntro = function () {
-          if (root.classList.contains('scrolled')) return;
-          root.classList.add('scrolled');
-          ['scroll', 'wheel', 'touchmove', 'keydown'].forEach(function (type) {
-            window.removeEventListener(type, showIntro);
-          });
-        };
-        if (window.scrollY > 0) showIntro();
-        ['scroll', 'wheel', 'touchmove', 'keydown'].forEach(function (type) {
-          window.addEventListener(type, showIntro, { passive: true });
-        });
-        setTimeout(showIntro, 2500);
+        // Home intro bullets fade in one by one right after the page loads.
+        setTimeout(function () {
+          document.documentElement.classList.add('intro-in');
+        }, 290);
 
         // Fade in content blocks as they scroll into view. Anything already on
         // screen at load is left alone so the first view never flickers.
