@@ -52,7 +52,9 @@ const resume = await getPage('resume');
       b.setAttribute('aria-controls', 'resume');
       b.addEventListener('click', (e) => {
         e.preventDefault();
-        setOpen(!panel.classList.contains('is-open'), false);
+        // Opening scrolls down to the resume; closing stays put.
+        const opening = !panel.classList.contains('is-open');
+        setOpen(opening, opening);
       });
     });
 
