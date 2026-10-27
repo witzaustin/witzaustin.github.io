@@ -4,18 +4,18 @@
 
 /* ---- Design tokens: change colors here ---- */
 :root {
-  --bg: #f4f0ea;
-  --surface: #ece6dd;
-  --text: #1c1a17;
-  --body: #4d4840;
-  --muted: #8b8478;
-  --line: rgba(28, 26, 23, 0.12);
-  --line-strong: rgba(28, 26, 23, 0.28);
-  --accent: #a3603f;
-  --ok: #5d6e4f;
-  --wash-1: rgba(229, 196, 176, 0.65);
-  --wash-2: rgba(203, 211, 191, 0.7);
-  --wash-3: rgba(236, 220, 205, 0.8);
+  --bg: #f4f3ef;
+  --surface: #eaeae5;
+  --text: #141821;
+  --body: #434a56;
+  --muted: #848b96;
+  --line: rgba(20, 24, 33, 0.12);
+  --line-strong: rgba(20, 24, 33, 0.28);
+  --accent: #24418f;
+  --ok: #4f6b55;
+  --wash-1: rgba(178, 198, 232, 0.6);
+  --wash-2: rgba(205, 214, 228, 0.75);
+  --wash-3: rgba(230, 228, 220, 0.85);
   --todo-bg: #f3e3b5;
   --todo-text: #6e5410;
 
@@ -27,18 +27,18 @@
 }
 
 :root[data-theme='dark'] {
-  --bg: #15130f;
-  --surface: #1e1b16;
-  --text: #f1ebe2;
-  --body: #c9c1b5;
-  --muted: #8f877b;
-  --line: rgba(241, 235, 226, 0.12);
-  --line-strong: rgba(241, 235, 226, 0.3);
-  --accent: #d9a07f;
-  --ok: #a8b897;
-  --wash-1: rgba(120, 72, 50, 0.35);
-  --wash-2: rgba(70, 82, 62, 0.4);
-  --wash-3: rgba(90, 66, 50, 0.3);
+  --bg: #101318;
+  --surface: #171b22;
+  --text: #eef1f5;
+  --body: #c2c8d1;
+  --muted: #8790a0;
+  --line: rgba(238, 241, 245, 0.12);
+  --line-strong: rgba(238, 241, 245, 0.3);
+  --accent: #8eaaf0;
+  --ok: #9fbca5;
+  --wash-1: rgba(44, 76, 150, 0.38);
+  --wash-2: rgba(52, 72, 104, 0.38);
+  --wash-3: rgba(32, 46, 76, 0.4);
   --todo-bg: #3d3214;
   --todo-text: #f0d482;
   color-scheme: dark;
