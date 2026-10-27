@@ -129,7 +129,6 @@ GitHub's own guide: https://docs.github.com/en/pages/configuring-a-custom-domain
 Run `npm run todos` for the full list. The ones that matter most:
 
 - `attribute-data-health.md`: what it's built with, what "out of order" means, who uses it, any result
-- `prescription-quantity.md`: a one-sentence plain-language example of how the calculator works
 - `ai.md`: the "Where I don't trust it" section, in your own words
 - `projects/index.md`: tools used for the briefing and Notion agent
 - `about.md`: optional "Outside of work" line
