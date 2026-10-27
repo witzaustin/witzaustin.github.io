@@ -1,7 +1,7 @@
 ---
 title: "Prescription Quantity: from launch to the highest-volume workflows"
 summary: Helped launch an ordering feature for clinical users, then owned it past rollout. Ordering errors dropped 30%.
-order: 3
+order: 2
 tags: [Product, Launch, Feature ownership]
 result: 30% fewer ordering errors · live on the highest-volume ordering workflows
 ---
