@@ -11,8 +11,8 @@ Now AI is a normal part of how I work. Here's what that looks like.
 
 ## What I use
 
-- **Claude** for work that needs careful reasoning over structured information, like the [catalog audit skill](/projects/catalog-audit). I also use Claude Code. [TODO: confirm what you use Claude Code for, or cut it]
-- **Gemini** for batch work through custom Gems, like the [legacy data crosswalk](/projects/attribute-crosswalk). [TODO: adjust once you settle Claude vs. Gemini for that project]
+- **Claude** for work that needs careful reasoning over structured information, like the [catalog audit skill](/projects/catalog-audit) and the [legacy data crosswalk](/projects/attribute-crosswalk), where I split the work across subagents on Opus, Sonnet, and Haiku. I also use Claude Code. [TODO: confirm what you use Claude Code for, or cut it]
+- **Gemini** for batch work through custom Gems.
 - **N8N** for workflows that run on a schedule, like my weekly industry briefing.
 
 ## How I decide what to build

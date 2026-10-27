@@ -1,14 +1,14 @@
 ---
 title: Standardizing years of legacy product data
-summary: An AI agent that maps inconsistent legacy attribute values to the current catalog standard and catches outdated brand names.
+summary: A Claude agent, split into subagents on Opus, Sonnet, and Haiku, that maps inconsistent legacy attribute values to the current catalog standard and catches outdated brand names.
 order: 4
-tags: [AI, Data quality, Automation]
+tags: [AI, Claude, Data quality]
 result: ~4 weeks of manual work per batch reduced to a review measured in hours
 ---
 
 # Standardizing years of legacy product data
 
-**Role:** Built it myself · **Tools:** [TODO: the resume says Claude, but your Ramp portfolio describes this as a Gemini Gem. Pick the right one, or say both if you used both.] · **Result:** About four weeks of manual work per batch reduced to hours of review
+**Role:** Built it myself · **Tools:** Claude (Opus, Sonnet, Haiku) · **Result:** About four weeks of manual work per batch reduced to hours of review
 
 ## The problem
 
@@ -18,7 +18,13 @@ Standardizing one group of attributes by hand took weeks of analyst time. Becaus
 
 ## What I built
 
-An AI agent that processes attribute groups in batches. An analyst gives it a filtered spreadsheet of every attribute and value in a group (for example, every attribute with "brand" in the name), and the agent handles the mapping.
+A Claude agent that processes attribute groups in batches. An analyst gives it a filtered spreadsheet of every attribute and value in a group (for example, every attribute with "brand" in the name), and the agent handles the mapping.
+
+Instead of one model doing everything, I split the work across subagents and gave each one the Claude model that fits its job:
+
+- **Opus for reasoning.** It works through the mapping decisions: what each legacy value should become under the style guide, and whether a brand name is still current.
+- **Sonnet for spreadsheet work.** It reads the input file and builds the mapping spreadsheet.
+- **Haiku for change notes.** It writes a short note on what's different or changed in each proposed update, so the reviewer can see what moved without comparing values by hand.
 
 ## How it works
 
