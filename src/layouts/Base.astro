@@ -34,15 +34,13 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
     <meta property="og:title" content={pageTitle} />
     {description && <meta property="og:description" content={description} />}
     <meta property="og:url" content={canonical} />
-    <meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#161513" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f4f0ea" />
     <script is:inline>
-      // Apply the saved or system theme before the page paints.
+      // Light by default. Dark only if the visitor picked it with the toggle.
       (function () {
         var saved = null;
         try { saved = localStorage.getItem('theme'); } catch (e) {}
-        var dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        document.documentElement.dataset.theme = saved === 'dark' ? 'dark' : 'light';
         // Lets CSS hide scroll-triggered content before the first paint.
         if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
           document.documentElement.classList.add('motion');
@@ -75,6 +73,7 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
 
     <footer class="site-footer">
       <div class="wrap">
+        <a class="footer-mail" href="mailto:witzaustin@gmail.com">witzaustin@gmail.com</a>
         <span>Austin Witz · New York area</span>
         <nav aria-label="Contact">
           <a href="/Austin_Witz_Resume.pdf">Resume</a>
@@ -90,6 +89,14 @@ const isCurrent = (href: string) => path === href || path.startsWith(`${href}/`)
         document.documentElement.dataset.theme = next;
         try { localStorage.setItem('theme', next); } catch (e) {}
       });
+
+      // Hairline under the sticky header once the page scrolls.
+      (function () {
+        var header = document.querySelector('.site-header');
+        var onScroll = function () { header.classList.toggle('is-stuck', window.scrollY > 4); };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+      })();
 
       // Scroll effects. Skipped entirely when the visitor prefers reduced motion.
       (function () {

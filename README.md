@@ -32,7 +32,7 @@ Project frontmatter:
 title: Auditing 20,000 SKUs with Claude    # card title and page title
 summary: One or two sentences.             # card text and search-engine description
 order: 1                                   # card order, lowest first
-tags: [AI, Claude, Data quality]           # not shown yet, kept for later
+tags: [AI, Claude, Data quality]           # small labels on the project card
 result: 20,000 SKUs audited                # the accent-colored line on the card (optional)
 image: /images/projects/catalog-audit.png  # optional, shown at the end of the write-up
 imageAlt: Diagram of the audit flow        # describe the image for screen readers

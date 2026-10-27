@@ -4,12 +4,18 @@ import { getProjects } from '../lib/content';
 const projects = await getProjects();
 ---
 
-<ul class="cards">
+<ol class="cards">
   {projects.map((project) => (
     <li class="card">
-      <h3><a href={`/projects/${project.id}`}>{project.data.title}</a></h3>
-      <p>{project.data.summary}</p>
-      {project.data.result && <div class="result">{project.data.result}</div>}
+      <div>
+        <h3><a href={`/projects/${project.id}`}>{project.data.title}</a></h3>
+        <p>{project.data.summary}</p>
+        <div class="meta">
+          {project.data.result && <span class="result">{project.data.result}</span>}
+          {project.data.tags.length > 0 && <span>{project.data.tags.join(' · ')}</span>}
+        </div>
+      </div>
+      <span class="arrow" aria-hidden="true">→</span>
     </li>
   ))}
-</ul>
+</ol>
