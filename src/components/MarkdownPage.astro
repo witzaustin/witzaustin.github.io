@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import ProjectCards from './ProjectCards.astro';
+import { getPage } from '../lib/content';
+
+interface Props {
+  id: string;
+  bodyClass?: string;
+}
+
+const { id, bodyClass } = Astro.props;
+const page = await getPage(id);
+---
+
+<Base title={page.data.title} description={page.data.description} bodyClass={bodyClass}>
+  <article class="prose">
+    <Fragment set:html={page.before} />
+    {page.hasCards && <ProjectCards />}
+    <Fragment set:html={page.after} />
+  </article>
+</Base>

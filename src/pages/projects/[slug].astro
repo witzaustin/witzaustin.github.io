@@ -1,0 +1,51 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { getProjects } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project, i) => ({
+    params: { slug: project.id },
+    props: { project, prev: projects[i - 1], next: projects[i + 1] },
+  }));
+}
+
+const { project, prev, next } = Astro.props;
+const { Content } = await render(project);
+const { image, imageAlt } = project.data;
+---
+
+<Base title={project.data.title} description={project.data.summary} bodyClass="project">
+  <article class="prose">
+    <Content />
+
+    {image ? (
+      <figure class="project-figure">
+        <img src={image} alt={imageAlt ?? ''} loading="lazy" />
+      </figure>
+    ) : import.meta.env.DEV && (
+      <div class="image-placeholder">
+        <mark class="todo">[TODO: image]</mark> Optional. Put a screenshot or diagram in
+        <code>public/images/projects/</code> and add <code>image: /images/projects/your-file.png</code>
+        and <code>imageAlt: ...</code> to this file's frontmatter. Only made-up data.
+        This box only shows in local preview.
+      </div>
+    )}
+  </article>
+
+  <nav class="pager" aria-label="More projects">
+    {prev && (
+      <a class="prev" href={`/projects/${prev.id}`}>
+        <span class="label">← Previous</span>
+        <span class="pager-title">{prev.data.title}</span>
+      </a>
+    )}
+    {next && (
+      <a class="next" href={`/projects/${next.id}`}>
+        <span class="label">Next →</span>
+        <span class="pager-title">{next.data.title}</span>
+      </a>
+    )}
+  </nav>
+</Base>
