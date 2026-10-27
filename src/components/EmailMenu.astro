@@ -1,0 +1,150 @@
+---
+// Clicking any mailto: link on the site opens this small menu, so visitors can
+// write from Gmail, Outlook, or their default mail app, or copy the address.
+// Without JavaScript the mailto: links work as usual.
+const email = 'witzaustin@gmail.com';
+const to = encodeURIComponent(email);
+---
+
+<div class="mail-menu" id="mail-menu" role="menu" aria-label="Email options" hidden>
+  <a role="menuitem" href={`https://mail.google.com/mail/?view=cm&fs=1&to=${to}`} target="_blank" rel="noopener">Gmail</a>
+  <a role="menuitem" href={`https://outlook.office.com/mail/deeplink/compose?to=${to}`} target="_blank" rel="noopener">Outlook</a>
+  <a role="menuitem" href={`mailto:${email}`} data-native>Default mail app</a>
+  <button role="menuitem" type="button" data-copy={email}>Copy address</button>
+  <span class="mail-menu-address">{email}</span>
+</div>
+
+<script>
+  const menu = document.getElementById('mail-menu');
+  if (menu) {
+    const items = [...menu.querySelectorAll<HTMLElement>('[role="menuitem"]')];
+    const copyBtn = menu.querySelector<HTMLButtonElement>('[data-copy]')!;
+    let opener: HTMLElement | null = null;
+
+    const close = (refocus = true) => {
+      if (menu.hidden) return;
+      menu.hidden = true;
+      opener?.setAttribute('aria-expanded', 'false');
+      if (refocus) opener?.focus();
+      opener = null;
+    };
+
+    const open = (link: HTMLElement) => {
+      opener = link;
+      copyBtn.textContent = 'Copy address';
+      menu.hidden = false;
+      link.setAttribute('aria-expanded', 'true');
+
+      // Sit just below the link, kept inside the viewport.
+      const r = link.getBoundingClientRect();
+      const w = menu.offsetWidth;
+      const left = Math.min(Math.max(12, r.left), document.documentElement.clientWidth - w - 12);
+      let top = r.bottom + 8;
+      if (top + menu.offsetHeight > window.innerHeight - 12) top = r.top - menu.offsetHeight - 8;
+      menu.style.left = `${left + window.scrollX}px`;
+      menu.style.top = `${top + window.scrollY}px`;
+      items[0].focus();
+    };
+
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest<HTMLAnchorElement>('a[href^="mailto:"]');
+      if (link && !menu.contains(link)) {
+        e.preventDefault();
+        if (opener === link) close();
+        else open(link);
+        return;
+      }
+      if (!menu.contains(target)) close(false);
+    });
+
+    menu.addEventListener('click', async (e) => {
+      const item = (e.target as HTMLElement).closest<HTMLElement>('[role="menuitem"]');
+      if (!item) return;
+      if (item === copyBtn) {
+        try {
+          await navigator.clipboard.writeText(copyBtn.dataset.copy!);
+          copyBtn.textContent = 'Copied';
+        } catch {
+          copyBtn.textContent = 'Press ⌘C / Ctrl+C';
+          const range = document.createRange();
+          range.selectNodeContents(menu.querySelector('.mail-menu-address')!);
+          getSelection()?.removeAllRanges();
+          getSelection()?.addRange(range);
+        }
+        return;
+      }
+      close(false);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (menu.hidden) return;
+      const i = items.indexOf(document.activeElement as HTMLElement);
+      if (e.key === 'Escape') { e.preventDefault(); close(); }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+      else if (e.key === 'Tab') close(false);
+    });
+
+    window.addEventListener('resize', () => close(false));
+
+    document.querySelectorAll('a[href^="mailto:"]').forEach((link) => {
+      if (menu.contains(link)) return;
+      link.setAttribute('aria-haspopup', 'menu');
+      link.setAttribute('aria-expanded', 'false');
+    });
+  }
+</script>
+
+<style>
+  .mail-menu {
+    position: absolute;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    min-width: 220px;
+    padding: 6px;
+    border: 1px solid var(--line-strong);
+    background: var(--bg);
+    box-shadow: 0 12px 32px rgba(20, 24, 33, 0.12);
+    font-family: var(--sans);
+  }
+
+  .mail-menu[hidden] {
+    display: none;
+  }
+
+  .mail-menu a,
+  .mail-menu button {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.875rem;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .mail-menu a:hover,
+  .mail-menu button:hover,
+  .mail-menu a:focus-visible,
+  .mail-menu button:focus-visible {
+    outline: none;
+    background: var(--surface);
+    color: var(--accent);
+  }
+
+  .mail-menu-address {
+    margin: 4px 6px 2px;
+    padding: 8px 6px 4px;
+    border-top: 1px solid var(--line);
+    font-size: 0.75rem;
+    color: var(--muted);
+    user-select: all;
+  }
+</style>
