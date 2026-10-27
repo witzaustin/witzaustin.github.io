@@ -20,7 +20,7 @@ Before Parachute I was at Global Industrial, first as a product management inter
 
 ## What I'm looking for
 
-A role in product operations, strategy and operations, or product management where I can keep doing the parts of this job I like most: finding the real problem in the data, working closely with engineering to fix it, and building tools that make a team faster. I'm most interested in healthtech, AI-native companies, and other teams building product where the details of an operational workflow really matter.
+A role in product operations, strategy & operations, or product management where I can keep doing the parts of this job I like most: finding the real problem in the data, working closely with engineering to fix it, and building tools that make a team faster. I'm most interested in healthtech, AI-native companies, and other teams building product where the details of an operational workflow really matter.
 
 ## Experience
 

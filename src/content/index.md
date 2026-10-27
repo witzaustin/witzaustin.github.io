@@ -13,7 +13,7 @@ My work falls into three areas:
 - **Catalog and coverage accuracy.** Maintain the product catalog and the YAML-based coverage criteria that determine whether a patient qualifies for a product, keeping both current as products and payer rules change.
 - **AI and automation.** Build AI tools, workflows, and automations with Claude, Notion, and N8N.
 
-I'm based in the New York area and looking for my next role in product operations, strategy and operations, or product management.
+I'm based in the New York area and looking for my next role in product operations, strategy & operations, or product management.
 
 [Resume (PDF)](/Austin_Witz_Resume.pdf) · [LinkedIn](https://www.linkedin.com/in/austin-witz) · [Email](mailto:witzaustin@gmail.com)
 
